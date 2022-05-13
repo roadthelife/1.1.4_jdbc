@@ -22,7 +22,6 @@ public class UserDaoJDBCImpl implements UserDao {
                     "lastName varchar (255), " +
                     "AGE tinyint, " +
                     "primary key(ID))");
-            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -32,7 +31,6 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement st = connection.createStatement()) {
             connection.setAutoCommit(false);
             st.executeUpdate("drop table IF exists USER");
-            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -46,7 +44,6 @@ public class UserDaoJDBCImpl implements UserDao {
             ps.setString(2, lastName);
             ps.setByte(3, age);
             ps.executeUpdate();
-            connection.commit();
             //System.out.println("User with name – " + name + " added to database");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,7 +54,6 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement st = connection.createStatement()) {
             connection.setAutoCommit(false);
             st.executeUpdate("delete from USER where id");
-            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,7 +73,6 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.setAge(rs.getByte("age"));
                 users.add(user);
             }
-            connection.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,7 +83,6 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement st = connection.createStatement()) {
             connection.setAutoCommit(false);
             st.executeUpdate("truncate table USER");
-            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
