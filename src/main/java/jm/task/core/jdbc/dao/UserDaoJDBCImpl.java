@@ -14,14 +14,14 @@ public class UserDaoJDBCImpl implements UserDao {
     private static Connection connection = Util.activeConnection();
 
     public void createUsersTable() {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("create table IF not exists USER" +
-                "(ID bigint UNSIGNED not null auto_increment, " +
-                "NAME varchar (255), " +
-                "lastName varchar (255), " +
-                "AGE tinyint, " +
-                "primary key(ID))")) {
+        try (Statement st = connection.createStatement()) {
             connection.setAutoCommit(false);
-            preparedStatement.executeUpdate();
+            st.executeUpdate("create table IF not exists USER" +
+                    "(ID bigint UNSIGNED not null auto_increment," +
+                    "NAME varchar (255), " +
+                    "lastName varchar (255), " +
+                    "AGE tinyint, " +
+                    "primary key(ID))");
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -29,9 +29,9 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("drop table IF exists USER")) {
+        try (Statement st = connection.createStatement()) {
             connection.setAutoCommit(false);
-            preparedStatement.executeUpdate();
+            st.executeUpdate("drop table IF exists USER");
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,9 +54,9 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("delete from USER where id")) {
+        try (Statement st = connection.createStatement()) {
             connection.setAutoCommit(false);
-            preparedStatement.executeUpdate();
+            st.executeUpdate("delete from USER where id");
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,8 +66,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
 
-        try (PreparedStatement ps = connection.prepareStatement("select ID, NAME, lastName, AGE from USER");
-             ResultSet rs = ps.executeQuery()) {
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery("select ID, NAME, lastName, AGE from USER")) {
             connection.setAutoCommit(false);
             while (rs.next()) {
                 User user = new User();
@@ -76,7 +76,6 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.setLastName(rs.getString("lastName"));
                 user.setAge(rs.getByte("age"));
                 users.add(user);
-                ps.executeUpdate();
             }
             connection.commit();
         } catch (Exception e) {
@@ -86,9 +85,9 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("truncate table USER")) {
+        try (Statement st = connection.createStatement()) {
             connection.setAutoCommit(false);
-            preparedStatement.executeUpdate();
+            st.executeUpdate("truncate table USER");
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
