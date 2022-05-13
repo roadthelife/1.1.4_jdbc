@@ -25,11 +25,6 @@ public class UserDaoJDBCImpl implements UserDao {
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
         }
     }
 
@@ -40,11 +35,6 @@ public class UserDaoJDBCImpl implements UserDao {
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
         }
     }
 
@@ -60,11 +50,6 @@ public class UserDaoJDBCImpl implements UserDao {
             //System.out.println("User with name – " + name + " added to database");
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
         }
     }
 
@@ -75,11 +60,6 @@ public class UserDaoJDBCImpl implements UserDao {
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
         }
     }
 
@@ -101,11 +81,6 @@ public class UserDaoJDBCImpl implements UserDao {
             connection.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
         }
         return users;
     }
@@ -117,11 +92,6 @@ public class UserDaoJDBCImpl implements UserDao {
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
         }
     }
 }
