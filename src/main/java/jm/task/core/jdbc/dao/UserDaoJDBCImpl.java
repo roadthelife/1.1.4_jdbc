@@ -14,27 +14,37 @@ public class UserDaoJDBCImpl implements UserDao {
     private static Connection connection = Util.activeConnection();
 
     public void createUsersTable() {
-        try (Statement st = connection.createStatement()) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("create table IF not exists USER" +
+                "(ID bigint UNSIGNED not null auto_increment, " +
+                "NAME varchar (255), " +
+                "lastName varchar (255), " +
+                "AGE tinyint, " +
+                "primary key(ID))")) {
             connection.setAutoCommit(false);
-            st.executeUpdate("create table IF not exists USER" +
-                    "(ID bigint UNSIGNED not null auto_increment," +
-                    "NAME varchar (255), " +
-                    "lastName varchar (255), " +
-                    "AGE tinyint, " +
-                    "primary key(ID))");
+            preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
         }
     }
 
     public void dropUsersTable() {
-        try (Statement st = connection.createStatement()) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("drop table IF exists USER")) {
             connection.setAutoCommit(false);
-            st.executeUpdate("drop table IF exists USER");
+            preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
         }
     }
 
@@ -50,24 +60,34 @@ public class UserDaoJDBCImpl implements UserDao {
             //System.out.println("User with name – " + name + " added to database");
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
         }
     }
 
     public void removeUserById(long id) {
-        try (Statement st = connection.createStatement()) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("delete from USER where id")) {
             connection.setAutoCommit(false);
-            st.executeUpdate("delete from USER where id");
+            preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
         }
     }
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
 
-        try (Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery("select ID, NAME, lastName, AGE from USER")) {
+        try (PreparedStatement ps = connection.prepareStatement("select ID, NAME, lastName, AGE from USER");
+             ResultSet rs = ps.executeQuery()) {
             connection.setAutoCommit(false);
             while (rs.next()) {
                 User user = new User();
@@ -76,21 +96,32 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.setLastName(rs.getString("lastName"));
                 user.setAge(rs.getByte("age"));
                 users.add(user);
+                ps.executeUpdate();
             }
             connection.commit();
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
         }
         return users;
     }
 
     public void cleanUsersTable() {
-        try (Statement st = connection.createStatement()) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("truncate table USER")) {
             connection.setAutoCommit(false);
-            st.executeUpdate("truncate table USER");
+            preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
         }
     }
 }
